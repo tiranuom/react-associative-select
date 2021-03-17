@@ -7,6 +7,7 @@ import { OptionType, TypeProvider } from './types'
 import { enumTypeProvider } from './EnumProvider'
 import { numberTypeProvider } from './NumberProvider'
 import { stringTypeProvider } from './StringProvider'
+import {booleanTypeProvider} from "./BooleanProvider";
 
 function bassOptions(schema: JSONSchema7): OptionType<string>[] {
   if (schema.properties) {
@@ -22,7 +23,8 @@ function bassOptions(schema: JSONSchema7): OptionType<string>[] {
 const globalTypeProviders: TypeProvider[] = [
   enumTypeProvider,
   numberTypeProvider,
-  stringTypeProvider
+  stringTypeProvider,
+  booleanTypeProvider
 ]
 
 function findTypeProvider(
@@ -183,7 +185,7 @@ export function AssociativeSelect<T>({
       ) => {
         if (
           (action.action === 'remove-value' || action.action === 'pop-value') &&
-          action.removedValue.index % 2 !== 0
+          !!action.removedValue && action.removedValue.index % 2 !== 0
         ) {
           const index = action.removedValue.index
           setValue([...value.filter((a) => a.index !== index - 1)])

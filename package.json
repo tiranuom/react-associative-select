@@ -1,6 +1,6 @@
 {
   "name": "react-associative-select",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Extension to react select for the associative selection",
   "author": "tiranuom",
   "license": "MIT",

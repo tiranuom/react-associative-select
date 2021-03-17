@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { AssociativeSelect } from 'react-associative-select'
-import 'react-associative-select/dist/index.css'
 import {JSONSchema7} from "json-schema";
 
 const schema: JSONSchema7 = {
@@ -10,7 +9,8 @@ const schema: JSONSchema7 = {
   properties: {
     "name": { type: "string", title: "Name", pattern: '^[a-zA-Z ]+$' },
     "age": { type: "number", title: "Age", minimum: 18, maximum: 60 },
-    "gender": { type: "string", title: "Gender", enum: ["Male", "Female"] }
+    "gender": { type: "string", title: "Gender", enum: ["Male", "Female"] },
+    "married": { type: "boolean", title: "Married"}
   }
 }
 
