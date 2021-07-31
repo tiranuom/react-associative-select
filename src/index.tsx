@@ -8,6 +8,7 @@ import { enumTypeProvider } from './EnumProvider'
 import { numberTypeProvider } from './NumberProvider'
 import { stringTypeProvider } from './StringProvider'
 import { booleanTypeProvider } from './BooleanProvider'
+import {integerTypeProvider} from "./IntegerProvider";
 
 function baseOptions(schema: JSONSchema7): OptionType<string>[] {
   if (schema.properties) {
@@ -24,6 +25,7 @@ function baseOptions(schema: JSONSchema7): OptionType<string>[] {
 const globalTypeProviders: TypeProvider[] = [
   enumTypeProvider,
   numberTypeProvider,
+  integerTypeProvider,
   stringTypeProvider,
   booleanTypeProvider
 ]

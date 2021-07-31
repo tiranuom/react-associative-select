@@ -11,9 +11,11 @@ function toOptions(): OptionsType<OptionType<unknown>> {
 }
 
 function isValidNewOption(property: JSONSchema7, inputValue: string): boolean {
-  const number = parseFloat(inputValue)
+  const number = +inputValue
+  console.log(number)
   if (isNaN(number)) return false
   if (property.maximum && number > property.maximum) return false
+  if (property.multipleOf && number % property.multipleOf !== 0) return false
   return !(property.minimum && number < property.minimum)
 }
 
