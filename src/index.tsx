@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import CreatableSelect, { Props } from 'react-select/async-creatable'
+import CreatableSelect, { Props } from 'react-select/creatable'
 import { ActionMeta, components } from 'react-select'
 import { OptionsType } from 'react-select/src/types'
 import { JSONSchema7 } from 'json-schema'
@@ -7,14 +7,15 @@ import { OptionType, TypeProvider } from './types'
 import { enumTypeProvider } from './EnumProvider'
 import { numberTypeProvider } from './NumberProvider'
 import { stringTypeProvider } from './StringProvider'
-import {booleanTypeProvider} from "./BooleanProvider";
+import { booleanTypeProvider } from './BooleanProvider'
 
-function bassOptions(schema: JSONSchema7): OptionType<string>[] {
+function baseOptions(schema: JSONSchema7): OptionType<string>[] {
   if (schema.properties) {
     return Object.entries(schema.properties).map(
-      ([key, value]: [string, JSONSchema7]) => ({
+      ([key, value]: [string, JSONSchema7 | boolean]) => ({
         value: key,
-        label: value.title ?? ''
+        label: (value as JSONSchema7).title ?? '',
+        base: true
       })
     )
   } else return []
@@ -37,7 +38,11 @@ function findTypeProvider(
 }
 
 export type OptionsProvider<T> = {
-  [K in keyof Partial<T>]: (inputString: string) => Promise<OptionsType<T[K]>>
+  [K in keyof Partial<T>]: (
+    inputString?: string
+  ) => T[K] extends Array<infer E>
+    ? Promise<OptionsType<OptionType<E>>>
+    : Promise<OptionsType<OptionType<T[K]>>>
 }
 
 interface AssociativeSelectProps<T>
@@ -72,6 +77,10 @@ export function AssociativeSelect<T>({
   const [options, setOptions] = useState<OptionsType<OptionType<unknown>>>([])
 
   useEffect(() => {
+    setOptions(baseOptions(schema))
+  }, [])
+
+  useEffect(() => {
     let result: OptionsType<OptionType<unknown>> = []
     Object.entries(value ?? {}).forEach(([k, v]: [string, any]) => {
       if (!schema.properties) return
@@ -93,10 +102,19 @@ export function AssociativeSelect<T>({
 
   useEffect(() => {
     if (onChange) {
-      const result: Partial<T> = {}
+      const result: any = {}
       for (let i = 0; i < currentValue.length; i += 2) {
         if (currentValue[i + 1]) {
-          result[currentValue[i].value as string] = currentValue[i + 1].value
+          const key = (currentValue[i].value as string).split(':')[0] as keyof T
+          if (
+            schema.properties &&
+            (schema.properties[key as string] as any)?.type === 'array'
+          ) {
+            result[key] = result[key] ?? []
+            result[key].push(currentValue[i + 1].value as any)
+          } else {
+            result[key] = currentValue[i + 1].value as any
+          }
         }
       }
       onChange(result)
@@ -104,21 +122,7 @@ export function AssociativeSelect<T>({
   }, [currentValue])
 
   useEffect(() => {
-    if (!schema.properties) return
-
-    if (currentValue.length % 2 === 1) {
-      const last = currentValue[currentValue.length - 1] as OptionType<string>
-
-      const property: JSONSchema7 = schema.properties[last.value] as JSONSchema7
-
-      const typeProvider = findTypeProvider(property, typeProviders)
-
-      if (typeProvider) {
-        setOptions(typeProvider.toOptions(property))
-      }
-    } else {
-      setOptions(bassOptions(schema))
-    }
+    loadOptions(undefined)
   }, [currentValue])
 
   const isValidNewOption = useCallback<(inputValue: string) => boolean>(
@@ -130,7 +134,11 @@ export function AssociativeSelect<T>({
 
       const last = currentValue[currentValue.length - 1] as OptionType<string>
 
-      const property: JSONSchema7 = schema.properties[last.value] as JSONSchema7
+      const property: JSONSchema7 = schema.properties[
+        last.value.split(':')[0]
+      ] as JSONSchema7
+
+      if (property.additionalItems === false) return false
 
       const typeProvider = findTypeProvider(property, typeProviders)
 
@@ -142,55 +150,87 @@ export function AssociativeSelect<T>({
     [currentValue]
   )
 
+  const loadOptions = useCallback<(inputValue?: string) => void>(
+    (inputValue) => {
+      setOptions([])
+      setValue((currentValue) => {
+        setOptions((options) => {
+          if (currentValue.length % 2 === 0) {
+            return baseOptions(schema)
+          } else {
+            const key = ((currentValue[currentValue.length - 1] as OptionType<
+              keyof T
+            >).value as string).split(':')[0] as keyof T
+
+            if (!!optionMapping && optionMapping[key]) {
+              ;(optionMapping[key](inputValue) as any).then((a: any) => {
+                setValue((currentValue) => {
+                  const newKey = ((currentValue[
+                    currentValue.length - 1
+                  ] as OptionType<keyof T>).value as string).split(
+                    ':'
+                  )[0] as keyof T
+                  if (newKey === key) {
+                    setOptions(a)
+                  }
+                  return currentValue
+                })
+              })
+            } else if (
+              schema.properties &&
+              !!schema.properties[key as string] &&
+              !!(schema.properties[key as string] as JSONSchema7).enum
+            ) {
+              const _enum =
+                (schema.properties[key as string] as JSONSchema7).enum ?? []
+              return _enum.map((e) => ({ label: e + '', value: e + '' }))
+            }
+          }
+          return options.filter((a) =>
+            a.label.toLowerCase().startsWith(inputValue ?? '')
+          )
+        })
+        return currentValue
+      })
+    },
+    []
+  )
+
   return (
     <CreatableSelect
       {...props}
       isMulti
       isClearable
       value={currentValue.map((a, index) => ({ ...a, index }))}
-      // options={options}
-      loadOptions={(inputValue, callback) => {
-        if (
-          optionMapping &&
-          currentValue.length % 2 === 1 &&
-          optionMapping[
-            (currentValue[currentValue.length - 1] as OptionType<string>).value
-          ]
-        ) {
-          const promise: Promise<OptionsType<any>> = optionMapping[
-            (currentValue[currentValue.length - 1] as OptionType<string>).value
-          ](inputValue)
-
-          promise
-            .then((v) => {
-              setOptions(v)
-              return v
-            })
-            .then((value) => callback(value))
-        } else if (!inputValue.length) {
-          callback(options)
-        } else {
-          callback(
-            options.filter((v) =>
-              v.label.toLowerCase().startsWith(inputValue.toLowerCase())
-            )
-          )
-        }
-      }}
-      cacheOptions
-      defaultOptions={options}
+      options={options as any}
+      defaultOptions={options as any}
+      onInputChange={loadOptions}
+      allowCreateWhileLoading={false}
       onChange={(
         value: OptionsType<OptionType<unknown>>,
         action: ActionMeta<any>
       ) => {
         if (
           (action.action === 'remove-value' || action.action === 'pop-value') &&
-          !!action.removedValue && action.removedValue.index % 2 !== 0
+          action.removedValue?.index % 2 !== 0
         ) {
-          const index = action.removedValue.index
-          setValue([...value.filter((a) => a.index !== index - 1)])
-        } else {
+          const index = action.removedValue?.index
+          setValue([...value.filter((a) => a?.index !== index - 1)])
+        } else if (action.action === 'clear') {
           setValue(value)
+        } else {
+          setValue(
+            value.map((a, i) => {
+              if (
+                i % 2 === 0 &&
+                schema.properties &&
+                (schema.properties[a.value as string] as JSONSchema7)?.type ===
+                  'array'
+              ) {
+                return { ...a, value: `${a.value}:${Date.now()}` }
+              } else return a
+            })
+          )
         }
       }}
       components={{
@@ -254,7 +294,10 @@ export function AssociativeSelect<T>({
       }}
       isValidNewOption={isValidNewOption}
       onCreateOption={(inputValue) =>
-        setValue([...currentValue, { label: inputValue, value: inputValue }])
+        setValue((currentValue) => [
+          ...currentValue,
+          { label: inputValue, value: inputValue }
+        ])
       }
       formatCreateLabel={(v) => <div>{v}</div>}
     />
