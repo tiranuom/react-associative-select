@@ -1,41 +1,72 @@
 import React from 'react'
+import Scrollspy from 'react-scrollspy'
+import {ExampleWrapper} from "./ExampleWrapper";
+import BasicExample, {basicExampleCode, basicUsageDescription} from "./examples/BasicExample";
+import {
+  AsyncOptionFetchingExample,
+  asyncOptionFetchingExampleCode,
+  asyncOptionFetchingUsageDescription
+} from "./examples/AsyncOptionFetchingExample";
+import {
+  MultiValueSupportExample,
+  multiValueSupportExampleCode,
+  multiValueSupportUsageDescription
+} from "./examples/MultiValueSupportExample";
+import {
+  ArbitraryValueExample,
+  arbitraryValueExampleCode,
+  arbitraryValueUsageDescription
+} from "./examples/ArbitrayValueExample";
 
-import { AssociativeSelect } from 'react-associative-select'
-import {JSONSchema7} from "json-schema";
+function App() {
+  return <>
+    <nav className={'navbar navbar-expand-lg navbar-light bg-light sticky-top'}>
+      <a className="navbar-brand mx-3" href="#">React associative select</a>
+    </nav>
+    <div className={'container row mt-5 mp-5'}>
+      <div className={'col-md-2 position-fixed'}>
+        <Scrollspy items={["basic-usage"]} currentClassName={"active"} className={"list-group"}>
+          <a className={'list-group-item list-group-item-action'} href={"#intro"}>Introduction</a>
+          <a className={'list-group-item list-group-item-action'} href={"#basic-usage"}>Basic Usage</a>
+          <a className={'list-group-item list-group-item-action'} href={"#async-usage"}>Async Usage</a>
+          <a className={'list-group-item list-group-item-action'} href={"#multi-value-support-usage"}>Multi Value Support</a>
+          <a className={'list-group-item list-group-item-action'} href={"#arbitrary-value-support-usage"}>Arbitrary Value Support</a>
+        </Scrollspy>
+      </div>
+      <div className={"col-md-8 offset-4"}>
+        <section id={"intro"}>
+          <h3>React Associative Select</h3>
+          <p><code>React-associative-search</code> uses <a href={'https://react-select.com'}>React Select</a> under the
+            hood to provide the select functionality.
+            Kudos for the authors of the great tool.</p>
 
-const schema: JSONSchema7 = {
-  type: "object",
-  title: "",
-  properties: {
-    "name": { type: "string", title: "Name", pattern: '^[a-zA-Z ]+$' },
-    "age": { type: "number", title: "Age", minimum: 18, maximum: 60, multipleOf: 1 },
-    "gender": { type: "string", title: "Gender", enum: ["Male", "Female"] },
-    "married": { type: "boolean", title: "Married"},
-    "country": {type: "string", title: "Country", additionalItems: false},
-    "currencies": {type: "array", title: "Currency", items: {type: "string"}, enum: ["LKR", "USD", "EURO"]}
-  }
-}
-
-const App = () => {
-  return <AssociativeSelect
-    schema={schema}
-    value={{}}
-    onChange={v => console.log(v)}
-    styles={{
-      multiValue() {
-        return {
-          borderRadius: 10
-        }
-      }
-    }}
-    optionMapping={{
-      country: (text) => new Promise((resolve) => {
-        console.log(text)
-        setTimeout(() => resolve(["USA", "China"].map(a => ({value: a, label: a}))), 1000)
-      })
-    }}
-  />
-
+          <p>Furthermore, the library uses `JSONSchema7` schema format to define the shape of search options. Full
+            JSONSchema7 spec
+            is not supported and the project is in active development to support additional features.</p>
+        </section>
+        <section id={"basic-usage"}>
+          <ExampleWrapper title={"Basic Usage"} description={basicUsageDescription} code={basicExampleCode}>
+            <BasicExample/>
+          </ExampleWrapper>
+        </section>
+        <section id={"async-usage"}>
+          <ExampleWrapper title={"Asynchronous options fetching"} description={asyncOptionFetchingUsageDescription} code={asyncOptionFetchingExampleCode}>
+            <AsyncOptionFetchingExample/>
+          </ExampleWrapper>
+        </section>
+        <section id={"multi-value-support-usage"}>
+          <ExampleWrapper title={"Multi Value Support"} description={multiValueSupportUsageDescription} code={multiValueSupportExampleCode}>
+            <MultiValueSupportExample/>
+          </ExampleWrapper>
+        </section>
+        <section id={"arbitrary-value-support-usage"}>
+          <ExampleWrapper title={"Arbitrary Support"} description={arbitraryValueUsageDescription} code={arbitraryValueExampleCode}>
+            <ArbitraryValueExample/>
+          </ExampleWrapper>
+        </section>
+      </div>
+    </div>
+  </>
 }
 
 export default App

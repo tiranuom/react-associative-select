@@ -3,12 +3,14 @@ import CreatableSelect, { Props } from 'react-select/creatable'
 import { ActionMeta, components } from 'react-select'
 import { OptionsType } from 'react-select/src/types'
 import { JSONSchema7 } from 'json-schema'
-import { OptionType, TypeProvider } from './types'
+import { OptionType as _OptionType, TypeProvider } from './types'
 import { enumTypeProvider } from './EnumProvider'
 import { numberTypeProvider } from './NumberProvider'
 import { stringTypeProvider } from './StringProvider'
 import { booleanTypeProvider } from './BooleanProvider'
 import {integerTypeProvider} from "./IntegerProvider";
+
+export type OptionType<T> = _OptionType<T>
 
 function baseOptions(schema: JSONSchema7): OptionType<string>[] {
   if (schema.properties) {
