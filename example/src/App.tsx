@@ -46,7 +46,7 @@ function App() {
             is not supported and the project is in active development to support additional features.</p>
         </section>
         <section id={"installation"}>
-          <h3>Installation</h3>
+          <h5>Installation</h5>
           <p>The easiest way to install the react-associative-select is through npm or yarn.</p>
 
           <SyntaxHighlighter language={'shell'}>
