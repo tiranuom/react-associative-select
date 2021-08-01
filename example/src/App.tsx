@@ -2,6 +2,7 @@ import React from 'react'
 import Scrollspy from 'react-scrollspy'
 import {ExampleWrapper} from "./ExampleWrapper";
 import BasicExample, {basicExampleCode, basicUsageDescription} from "./examples/BasicExample";
+import SyntaxHighlighter from 'react-syntax-highlighter'
 import {
   AsyncOptionFetchingExample,
   asyncOptionFetchingExampleCode,
@@ -43,6 +44,20 @@ function App() {
           <p>Furthermore, the library uses `JSONSchema7` schema format to define the shape of search options. Full
             JSONSchema7 spec
             is not supported and the project is in active development to support additional features.</p>
+        </section>
+        <section id={"installation"}>
+          <h3>Installation</h3>
+          <p>The easiest way to install the react-associative-select is through npm or yarn.</p>
+
+          <SyntaxHighlighter language={'shell'}>
+            $ npm -i react-associative-select
+          </SyntaxHighlighter>
+
+          <p>or</p>
+
+          <SyntaxHighlighter language={'shell'}>
+            $ yarn add react-associative-select
+          </SyntaxHighlighter>
         </section>
         <section id={"basic-usage"}>
           <ExampleWrapper title={"Basic Usage"} description={basicUsageDescription} code={basicExampleCode}>

@@ -2,6 +2,8 @@
 
 A json-schema based extension for react-select to support associative selections.
 
+Please visit [Demo site](https://tiranuom.github.io/react-associative-select/) to see the component usage.
+
 ## Background
 
 `React-associative-search` uses [React Select](https://react-select.com) under the hood to provide the select functionality.
