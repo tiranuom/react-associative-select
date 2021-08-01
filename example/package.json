@@ -1,7 +1,7 @@
 {
   "name": "react-associative-select-example",
   "homepage": "https://tiranuom.github.io/react-associative-select",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",
