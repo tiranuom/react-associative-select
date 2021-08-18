@@ -8,7 +8,7 @@ import { enumTypeProvider } from './EnumProvider'
 import { numberTypeProvider } from './NumberProvider'
 import { stringTypeProvider } from './StringProvider'
 import { booleanTypeProvider } from './BooleanProvider'
-import {integerTypeProvider} from "./IntegerProvider";
+import { integerTypeProvider } from './IntegerProvider'
 
 export type OptionType<T> = _OptionType<T>
 

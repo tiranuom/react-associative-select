@@ -12,3 +12,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.pro-sidebar {
+  position: fixed!important;
+  top: 0;
+  height: 100vh;
+}
+
+.pro-sidebar .header {
+  padding: 1em;
+  font-weight: bold;
+}
+
+.pro-sidebar-inner {
+  background-color: #0a53be!important;
+}
+
+.footer {
+  padding: 1em;
+}

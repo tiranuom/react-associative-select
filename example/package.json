@@ -33,6 +33,8 @@
     "react-demo-tab": "^1.2.18",
     "react-demo-tab-cli": "^1.2.50",
     "react-dom": "link:../node_modules/react-dom",
+    "react-github-btn": "^1.2.0",
+    "react-pro-sidebar": "^0.6.0",
     "react-scripts": "link:../node_modules/react-scripts",
     "react-scrollspy": "^3.4.3",
     "react-syntax-highlighter": "^15.4.4",

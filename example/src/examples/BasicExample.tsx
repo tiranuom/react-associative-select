@@ -29,6 +29,8 @@ export default function BasicExample() {
     schema={schema}
     value={{}}
     onChange={onChange}
+    className='react-associative-select'
+    classNamePrefix='react-associative-select'
     styles={{
       multiValue() {
         return {
@@ -65,7 +67,7 @@ const schema: JSONSchema7 = {
   }
 }
 
-export default function BasicExample() {
+export function BasicExample() {
 
   function onChange(values: Partial<Person>) {
     console.log(values)
@@ -75,6 +77,8 @@ export default function BasicExample() {
     schema={schema}
     value={{}}
     onChange={onChange}
+    className='react-associative-select'
+    classNamePrefix='react-associative-select'
     styles={{
       multiValue() {
         return {

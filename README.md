@@ -247,5 +247,8 @@ For time being, only the simple objects are supported. The object may contain si
 }
 ```
 
+### License
+
+MIT Licensed. Copyright (c) Tiran Wijesekara 2021
 
 
