@@ -162,18 +162,21 @@ export function AssociativeSelect<T>({
           if (currentValue.length % 2 === 0) {
             return baseOptions(schema)
           } else {
-            const key = ((currentValue[currentValue.length - 1] as OptionType<
-              keyof T
-            >).value as string).split(':')[0] as keyof T
+            const key = (
+              (currentValue[currentValue.length - 1] as OptionType<keyof T>)
+                .value as string
+            ).split(':')[0] as keyof T
 
             if (!!optionMapping && optionMapping[key]) {
               ;(optionMapping[key](inputValue) as any).then((a: any) => {
                 setValue((currentValue) => {
-                  const newKey = ((currentValue[
-                    currentValue.length - 1
-                  ] as OptionType<keyof T>).value as string).split(
-                    ':'
-                  )[0] as keyof T
+                  const newKey = (
+                    ((
+                      currentValue[currentValue.length - 1] as OptionType<
+                        keyof T
+                      >
+                    )?.value as string) ?? ''
+                  ).split(':')[0] as keyof T
                   if (newKey === key) {
                     setOptions(a)
                   }

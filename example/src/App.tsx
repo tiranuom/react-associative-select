@@ -234,8 +234,9 @@ function App() {
         </section>
       </div>
     </div>
-    <footer className={"d-flex justify-content-center align-items-center m-2"}>
+    <footer className={"d-flex justify-content-around align-items-center m-2"} style={{color: "grey"}}>
       <small>MIT Licensed. Copyright (c) <a href={"https://github.com/tiranuom"}>tiranuom</a> 2021</small>
+      <small>Thanks to <a href={"https://www.hsenidmobile.com/"}>hSenid Mobile Solutions</a> for supporting this project </small>
     </footer>
   </>
 }
