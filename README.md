@@ -1,5 +1,7 @@
 # react-associative-select
 
+![npm](https://img.shields.io/npm/v/react-associative-select)
+
 A json-schema based extension for react-select to support associative selections.
 
 Please visit [Demo site](https://tiranuom.github.io/react-associative-select/) to see the component usage.
